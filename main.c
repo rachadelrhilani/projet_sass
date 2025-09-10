@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
 #define max 100
 /* projet de saas  */
@@ -7,9 +8,9 @@ typedef struct joueur{
     int id;
     char nom[30];
     char prenom[30];
-    int numeroMaillot;
+    char numeroMaillot[30];
     char poste[30];
-    int age;
+    char age[30];
     int buts;
 }joueur;
 
@@ -21,6 +22,15 @@ int auto_id = 1; // initialisation de l'id
 // valide nom
 int validernom(char chaine[]) {
 	int i;
+	
+	if (chaine == NULL || chaine[0] == '\0') {
+        return 0;
+    }
+    
+	int lennom = strlen(chaine);
+	if(!(lennom >= 3)){
+		return 0; 
+	}
     for (i = 0; i < strlen(chaine); i++) {
         if (!((chaine[i] >= 'A' && chaine[i] <= 'Z') || (chaine[i] >= 'a' && chaine[i] <= 'z') || chaine[i] == ' ')){
         	return 0; 
@@ -30,15 +40,20 @@ int validernom(char chaine[]) {
 }
 
 // valide numero maillot
-int validernumeromaillot(int numero) {
-	if(!(numero >= 1 && numero <= 99)){
-		return 0; 
-	}
+int validernumeromaillot(char numero[]) {
 	
+	if (numero == NULL || numero[0] == '\0') {
+        return 0;
+    }
+    int i;
+    
+    int num = atoi(numero);
+    if (!(num >= 1 && num <= 99)) {
+        return 0; // valide
+    }
 	// verifier si le numero de maillot est deja utiliser
-	int i;
     for ( i = 0; i < nbrjoueur; i++) {
-        if (joueurs[i].numeroMaillot == numero) {
+        if (strcmp(numero,joueurs[i].numeroMaillot) == 0) {
             return 0; 
         }
     }
@@ -48,6 +63,20 @@ int validernumeromaillot(int numero) {
 // valide de poste
 int validerposte(char chaine[]) {
 	int i;
+	
+	int lenposte = strlen(chaine);
+	if(!(lenposte >= 6)){
+		return 0; 
+	}
+	
+	for (i = 0; i < strlen(chaine); i++) {
+        chaine[i] = tolower(chaine[i]);
+    }
+	//(gardien, défenseur, milieu, attaquant).
+	if(!(strcmp("gardien",chaine)==0||strcmp("defenseur",chaine)==0||strcmp("milieu",chaine)==0||strcmp("attaquant",chaine)==0)){
+		return 0;
+	}
+    
     for (i = 0; i < strlen(chaine); i++) {
         if (!((chaine[i] >= 'A' && chaine[i] <= 'Z') || (chaine[i] >= 'a' && chaine[i] <= 'z') || chaine[i] == ' ')){
         	return 0;
@@ -57,12 +86,27 @@ int validerposte(char chaine[]) {
 }
 
 // valide age
-int validerage(int age) {
-	if(!(age >= 15 && age <= 45)){
-		return 0; 
-	}
+int validerage(char age[]) {
+	if (age == NULL || age[0] == '\0') {
+        return 0;
+    }
+    
+    
+	int num = atoi(age);
+    if (!(num >= 15 && num <= 45)) {
+        return 0; // valide
+    }
     return 1;
 }
+
+// valide but
+int validerbut(int but) {
+    if (!(but >= 0) ){
+        return 0; // valide
+    }
+    return 1;
+}
+
 
 //choix ajoutersimple
 void ajoutersimple(){
@@ -105,7 +149,7 @@ void ajoutersimple(){
 			printf("ton nombre n'est pas (de 1 a 99) ou (il est deja pris)\n");
 		}
     	printf("numero de maillot : ");
-        scanf("%d", &j.numeroMaillot);
+        scanf("%s", j.numeroMaillot);
         faux++;
 	}while(!(validernumeromaillot(j.numeroMaillot)));
 	
@@ -125,16 +169,24 @@ void ajoutersimple(){
 	do{
 		if( faux > 0){
 			printf("Veuillez entre de 15 a 45\n");
+			printf("n'entre pas des lettre\n");
 		}
     	printf("Age de joueur: ");
-        scanf("%d", &j.age);
+        scanf("%s", j.age);
         faux++;
 	}while(!(validerage(j.age)));
 	
+	faux = 0;
 	
-    printf("Nombre de buts : ");
-    scanf("%d", &j.buts);
-    
+	do{
+	   if( faux > 0){
+			printf("Veuillez entre de 0 et plus\n");
+			printf("n'entre pas des lettre\n");
+	   }
+       printf("Nombre de buts : ");
+       scanf("%d", &j.buts);
+       faux++;
+    }while(!(validerbut(j.buts)));
     
 
     joueurs[nbrjoueur++] = j;
@@ -185,11 +237,106 @@ void afficherjoueurs() {
     int i;
     printf("\n-------------- Liste des joueurs --------------\n");
     for (i = 0; i < nbrjoueur; i++) {
-        printf("id: %d |nom: %s | prenom: %s | maillot: %d | poste: %s | age: %d | buts: %d\n",
+        printf("id: %d |nom: %s | prenom: %s | maillot: %s | poste: %s | age: %s | buts: %d\n",
                joueurs[i].id,joueurs[i].nom,joueurs[i].prenom,
                joueurs[i].numeroMaillot, joueurs[i].poste,
                joueurs[i].age, joueurs[i].buts);
     }
+}
+
+void supprimerjoueurs(){
+	if (nbrjoueur == 0) {
+        printf("aucune joueur dans la liste pour le supprimer\n");
+        return;
+    }
+	int trouve = 0;
+	int i;
+	int id;
+	char confirme[180];
+	
+	printf("entre l'identifiant que tu veux supprimer : \n");
+	scanf("%d",&id);
+	printf("voulez vous vraiment supprimer cette joueur (O/N)");
+	scanf("%s",confirme);
+	if(strcmp(confirme,"O") == 0 || strcmp(confirme,"o") == 0){
+	   for(i = 0; i < nbrjoueur;i++){
+		 if(id == joueurs[i].id ){
+			joueurs[i] = joueurs[i+1];
+			trouve = 1;
+			printf("supprimer avec sucess");
+		 }
+	   }
+	  nbrjoueur--;
+	}
+	else{
+		printf("suppression annuler");
+		trouve = 1;
+	}
+	if(trouve == 0){
+		printf("aucune joueur avec ce identifiant");
+	}
+}
+
+void modifierjoueurs(){
+	if (nbrjoueur == 0) {
+        printf("aucune joueur dans la liste pour le supprimer\n");
+        return;
+    }
+	int trouve = 0;
+	int i;
+	int id;
+	printf("entre l'identifiant que tu veux modifier :");
+	scanf("%d",&id);
+	for(i = 0; i < nbrjoueur;i++){
+	   if(id == joueurs[i].id ){
+			trouve = 1;
+			printf("id: %d |nom: %s | prenom: %s | maillot: %s | poste: %s | age: %s | buts: %d\n",
+               joueurs[i].id,joueurs[i].nom,joueurs[i].prenom,
+               joueurs[i].numeroMaillot, joueurs[i].poste,
+               joueurs[i].age, joueurs[i].buts);
+            char poste[30];
+            char age[30];
+            int buts;
+            int faux = 0;
+	
+	    do{
+		    if( faux > 0){
+			 printf("Veuillez entre des caractere\n");
+		    }
+    	    printf("le Poste de joueur: ");
+            scanf(" %s", poste);
+            faux++;
+	    }while(!(validerposte(poste)));
+	    
+	    strcpy(joueurs[i].poste,poste); // modifier le poste
+	    faux = 0;
+	
+	    do{
+		    if( faux > 0){
+			printf("Veuillez entre des caractere\n");
+		    }
+    	    printf("l'age de joueur: ");
+            scanf("%s", age);
+            faux++;
+	    }while(!(validerage(age)));
+	    
+	    strcpy(joueurs[i].age,age);  // modifier l'age
+	    faux = 0;
+	    do{
+		    if( faux > 0){
+			printf("Veuillez entre des caractere\n");
+		    }
+    	    printf("le Poste de joueur: ");
+            scanf("%d",&buts);
+            faux++;
+	    }while(!(validerbut(buts)));
+	    joueurs[i].buts = buts;    // modifier les buts
+			printf("modifier avec sucess");
+		}
+	}
+	if(trouve == 0){
+		printf("aucune joueur avec ce identifiant");
+	}
 }
 int main(){
     int choix;
@@ -197,6 +344,8 @@ int main(){
         printf("\n===== MENU PRINCIPAL =====\n");
         printf("1. ajouter des joueurs\n");
         printf("2. afficher les joueurs\n");
+        printf("3. supprimer les joueurs\n");
+        printf("4. modifier les joueurs\n");
         printf("0. Quitter\n");
         printf("Votre choix : ");
         scanf("%d", &choix);
@@ -204,6 +353,8 @@ int main(){
         switch (choix) {
             case 1: ajouterjoueur(); break;
             case 2: afficherjoueurs(); break;
+            case 3: supprimerjoueurs(); break;
+            case 4: modifierjoueurs(); break;
             case 0: printf(" fin de programme \n"); break;
             default: printf(" veuillez entre l'un des nombres dans le menu  .\n");
         }
