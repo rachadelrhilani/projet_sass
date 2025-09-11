@@ -6,10 +6,7 @@
 #define RED "\033[0;31m"
 #define GREEN "\033[0;32m"
 #define YELLOW "\033[0;33m"
-#define BLUE "\033[0;34m"
-#define CYAN "\033[0;36m"
 #define RESET "\033[0m"
-#define CYAN_title "\033[1;36m"
 /* projet de saas  */
 typedef struct joueur{
     int id;
@@ -226,7 +223,7 @@ void ajoutersimple(){
 
     joueurs[nbrjoueur++] = j;
 
-    printf("le joueur ajoute avec sucess !\n");
+    printf(GREEN"le joueur ajoute avec sucess !\n"RESET);
     printf("appyuez pour continue .....");
     getchar();getchar();
 }
@@ -250,8 +247,8 @@ void ajouterjoueur(){
     	system("cls");
     	printf(YELLOW"1_ ajouter simple\n");
         printf("2_ ajouter multiple\n");
-        printf("2_ ajouter multiple\n"RESET);
-        printf("votre choix");
+        printf("3_Quittre\n"RESET);
+        printf("votre choix :");
         scanf("%d",&choix);
         switch(choix){
             case 1:
@@ -398,11 +395,14 @@ void rechercherjoueur() {
             }
         }
         
-        printf("appyuez pour revenir .....");
-        getchar();getchar();
-        if (!trouve) {
-            printf("aucun joueur avec l id %d.\n", id);
+        if(trouve == 1){
             printf("appyuez pour revenir .....");
+            getchar();getchar();	
+		}
+        
+        else if (trouve == 0) {
+            printf("aucun joueur ce id %d.\n", id);
+			printf("appyuez pour revenir .....");
             getchar();getchar();
         }
     } 
@@ -411,7 +411,7 @@ void rechercherjoueur() {
         int trouve = 0;
         printf("entre le nom du joueur : ");
         scanf(" %[^\n]", nom);
-
+        
         for (i = 0; i < nbrjoueur; i++) {
             if (strcmp(joueurs[i].nom, nom) == 0) {  //comparaison de nom avec les autres nom dans le tableau
                 printf("--- le joueur %s ---\n",joueurs[i].nom);
@@ -420,11 +420,15 @@ void rechercherjoueur() {
                                joueurs[i].numeroMaillot, joueurs[i].poste,
                                joueurs[i].age, joueurs[i].buts);
                 trouve = 1;
+                break;
             }
         }
-        printf("appyuez pour revenir .....");
-        getchar();getchar();
-        if (!trouve) {
+        if(trouve == 1){
+            printf("appyuez pour revenir .....");
+            getchar();getchar();	
+		}
+        
+        else if (trouve == 0) {
             printf("aucun joueur avec le nom '%s'.\n", nom);
 			printf("appyuez pour revenir .....");
             getchar();getchar();
@@ -570,7 +574,7 @@ void statistiques(){
 
 void supprimerjoueurs(){
 	if (nbrjoueur == 0) {
-        printf("aucune joueur dans la liste pour le supprimer\n");
+        printf(RED"aucune joueur dans la liste pour le supprimer\n"RESET);
         printf("appyuez pour revenir .....");
         getchar();getchar();
     }
@@ -581,11 +585,16 @@ void supprimerjoueurs(){
 	
 	printf("entre l'identifiant que tu veux supprimer : \n");
 	scanf("%d",&id);
-	printf("voulez vous vraiment supprimer cette joueur (O/N)");
+	printf(YELLOW"voulez vous vraiment supprimer cette joueur (O/N)"RESET);
 	scanf("%s",confirme);
 	if(strcmp(confirme,"O") == 0 || strcmp(confirme,"o") == 0){
 	   for(i = 0; i < nbrjoueur;i++){
 		 if(id == joueurs[i].id ){
+		    printf("\n ----------- le joueur supprime ----------- \n");
+		 	printf("id: %d |nom: %s | prenom: %s | maillot: %s | poste: %s | age: %s | buts: %d\n",
+               joueurs[i].id,joueurs[i].nom,joueurs[i].prenom,
+               joueurs[i].numeroMaillot, joueurs[i].poste,
+               joueurs[i].age, joueurs[i].buts);
 		 	for(j = i+1; j <= nbrjoueur - 1;j++){
 		 	joueurs[i] = joueurs[j];
 			 trouve = 1;	
@@ -593,7 +602,7 @@ void supprimerjoueurs(){
 		 }
 	   }
 	   nbrjoueur--;
-	   printf("supprimer avec sucess\n");
+	   printf(GREEN"supprimer avec sucess\n"RESET);
 	   printf("appyuez pour revenir .....");
        getchar();getchar();
 	}
@@ -612,7 +621,6 @@ void supprimerjoueurs(){
 
 
 void modifierjoueurs(){
-	system("cls");
 	if (nbrjoueur == 0) {
         printf(RED"aucune joueur dans la liste pour le supprimer\n"RESET);
         printf("appyuez pour revenir .....");
@@ -620,10 +628,11 @@ void modifierjoueurs(){
     }
     int choix;
     do{
+    system("cls");
 	printf(YELLOW"\n--- Menu de modification ---\n");
 	printf("0. Quitter.\n");
     printf("1. Modifier le poste d un joueur.\n");
-    printf("2. Modifier l’age d’un joueur. \n");
+    printf("2. Modifier l age d un joueur. \n");
     printf("3. Modifier le nombre de buts marques par un joueur. \n"RESET);
 	printf("Votre choix : ");
     scanf("%d", &choix);
@@ -737,7 +746,7 @@ void modifierjoueurs(){
           getchar();getchar();
 	      break;
 	}
-	}while(choix);
+	}while(choix != 0);
 }
 int main(){
     int choix;
