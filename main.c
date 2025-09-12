@@ -201,7 +201,6 @@ void ajoutersimple(){
 	do{
 		if( faux > 0){
 			printf(RED"Veuillez entre de 15 a 45\n");
-			printf("n'entre pas des lettre\n"RESET);
 		}
     	printf("Age de joueur: ");
         scanf("%s", j.age);
@@ -213,7 +212,6 @@ void ajoutersimple(){
 	do{
 	   if( faux > 0){
 			printf(RED"Veuillez entre de 0 et plus\n");
-			printf("n'entre pas des lettre\n"RESET);
 	   }
        printf("Nombre de buts : ");
        check = scanf("%d", &j.buts);
@@ -247,7 +245,7 @@ void ajouterjoueur(){
     	system("cls");
     	printf(YELLOW"1_ ajouter simple\n");
         printf("2_ ajouter multiple\n");
-        printf("3_Quittre\n"RESET);
+        printf("0_Quittre\n"RESET);
         printf("votre choix :");
         scanf("%d",&choix);
         switch(choix){
@@ -257,11 +255,13 @@ void ajouterjoueur(){
             case 2:
               ajoutermultiple();
               break;
-            case 3:
+            case 0:
               printf("quitter\n");
               break;
+            default:
+            	printf("veuillez entre l'un de numero de menu");
         }
-    }while(choix !=3);
+    }while(choix !=0);
 }
 
 
@@ -274,11 +274,11 @@ void afficherjoueurs() {
 
     do {
     	system("cls");
-        printf("\n--- Affichage des joueurs ---\n");
+        printf(YELLOW"\n--- Affichage des joueurs ---\n");
         printf("1. Tri par Nom (ordre alphabitique)\n");
         printf("2. Tri par agee\n");
         printf("3. afficher par poste\n");
-        printf("4. retour\n");
+        printf("0. retour\n"RESET);
         printf("Votre choix : ");
         scanf("%d", &choix);
 
@@ -358,23 +358,24 @@ void afficherjoueurs() {
                 break;
             }
 
-            case 4:
-                printf("retour au menu principal.\n");
+            case 0:
+            	printf("retour au menu principal.\n");
                 break;
-
             default:
                 printf("ce choix invalide, veuillez saisi des nombres dans le menu.\n");
         }
 
-    } while (choix != 4);
+    } while (choix != 0);
 }
 
 
 void rechercherjoueur() {
     int choix;
-    printf("\n--- recherche de joueur ---\n");
+    system("cls");
+    printf(YELLOW"\n--- recherche de joueur ---\n");
     printf("1. rechercher par ID\n");
     printf("2. rechercher par Nom\n");
+    printf("0. rechercher par Nom\n"RESET);
     printf("Votre choix : ");
     scanf("%d", &choix);
     int i;
@@ -446,13 +447,13 @@ void statistiques(){
     int choix;
     do {
     system("cls");
-    printf("\n--- Menu Statistiques ---\n");
+    printf(YELLOW"\n--- Menu Statistiques ---\n");
     printf("1. nombre total de joueurs\n");
     printf("2. le moyen d'age des joueurs\n");
     printf("3. joueurs ayant marque plus de X buts\n");
     printf("4. meilleur buteur\n");
     printf("5. joueur le plus jeune et le plus age \n");
-    printf("0. Retour\n");
+    printf("0. Retour\n"RESET);
     printf("Votre choix : ");
     scanf("%d", &choix);
         int i;
@@ -573,6 +574,7 @@ void statistiques(){
 }
 
 void supprimerjoueurs(){
+	 system("cls");
 	if (nbrjoueur == 0) {
         printf(RED"aucune joueur dans la liste pour le supprimer\n"RESET);
         printf("appyuez pour revenir .....");
@@ -621,6 +623,7 @@ void supprimerjoueurs(){
 
 
 void modifierjoueurs(){
+	system("cls");
 	if (nbrjoueur == 0) {
         printf(RED"aucune joueur dans la liste pour le supprimer\n"RESET);
         printf("appyuez pour revenir .....");
@@ -628,7 +631,6 @@ void modifierjoueurs(){
     }
     int choix;
     do{
-    system("cls");
 	printf(YELLOW"\n--- Menu de modification ---\n");
 	printf("0. Quitter.\n");
     printf("1. Modifier le poste d un joueur.\n");
@@ -644,6 +646,7 @@ void modifierjoueurs(){
 			printf("retour au menu principale\n");
 			printf("appyuez pour revenir .....");
             getchar();getchar();
+            system("cls");
 			break;
 		case 1:
 		  printf("entre l'identifiant que tu veux modifier :");
@@ -745,6 +748,7 @@ void modifierjoueurs(){
 	      printf("appyuez pour revenir .....");
           getchar();getchar();
 	      break;
+	    default: printf(" veuillez entre l'un des nombres dans le menu  .\n");
 	}
 	}while(choix != 0);
 }
@@ -771,7 +775,7 @@ int main(){
             case 4: supprimerjoueurs(); break;
             case 5: modifierjoueurs(); break;
             case 6: statistiques(); break;
-            case 0: printf(" fin de programme \n"); break;
+            case 0: printf("Quitter ....."); break;
             default: printf(" veuillez entre l'un des nombres dans le menu  .\n");
         }
     } while (choix != 0);
